@@ -66,7 +66,7 @@ const Navbar = () => {
     >
       <Link to="/" className="flex items-center gap-2">
         <img
-          src={assets.logo}
+          src=""
           alt="logo"
           className={`h-9 ${isScrolled && "invert opacity-80"}`}
         />
