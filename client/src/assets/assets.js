@@ -79,27 +79,27 @@ export const cities = ["Hà Nội", "Hà Nam", "Đà Nẵng", "TP HCM"];
 export const exclusiveOffers = [
   {
     _id: 1,
-    title: "Summer Escape Package",
-    description: "Enjoy a complimentary night and daily breakfast",
+    title: "Gói Nghỉ Dưỡng Mùa Hè",
+    description: "Tận hưởng một đêm miễn phí và bữa sáng hàng ngày",
     priceOff: 25,
-    expiryDate: "Aug 31",
+    expiryDate: "31 Tháng 8",
     image: exclusiveOfferCardImg1,
   },
   {
     _id: 2,
-    title: "Romantic Getaway",
-    description: "Special couples package including spa treatment",
+    title: "Kỳ Nghỉ Lãng Mạn",
+    description: "Gói đặc biệt cho các cặp đôi bao gồm liệu trình spa",
     priceOff: 20,
-    expiryDate: "Sep 20",
+    expiryDate: "20 Tháng 9",
     image: exclusiveOfferCardImg2,
   },
   {
     _id: 3,
-    title: "Luxury Retreat",
+    title: "Khu Nghỉ Dưỡng Sang Trọng",
     description:
-      "Book 60 days in advance and save on your stay at any of our luxury properties worldwide.",
+      "Đặt trước 60 ngày và tiết kiệm cho kỳ nghỉ của bạn tại bất kỳ khách sạn sang trọng nào của chúng tôi trên toàn thế giới.",
     priceOff: 30,
-    expiryDate: "Sep 25",
+    expiryDate: "25 Tháng 9",
     image: exclusiveOfferCardImg3,
   },
 ];
@@ -109,65 +109,65 @@ export const testimonials = [
   {
     id: 1,
     name: "Emma Rodriguez",
-    address: "Barcelona, Spain",
+    address: "Barcelona, Tây Ban Nha",
     image:
       "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200",
     rating: 5,
     review:
-      "I've used many booking platforms before, but none compare to the personalized experience and attention to detail that QuickStay provides.",
+      "Tôi đã sử dụng nhiều nền tảng đặt phòng trước đây, nhưng không có nền tảng nào sánh được với trải nghiệm cá nhân hóa và sự chú ý đến từng chi tiết mà QuickStay mang lại.",
   },
   {
     id: 2,
     name: "Liam Johnson",
-    address: "New York, USA",
+    address: "New York, Hoa Kỳ",
     image:
       "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200",
     rating: 4,
     review:
-      "QuickStay exceeded my expectations. The booking process was seamless, and the hotels were absolutely top-notch. Highly recommended!",
+      "QuickStay đã vượt quá mong đợi của tôi. Quá trình đặt phòng rất mượt mà, và các khách sạn thực sự đẳng cấp. Rất đáng để giới thiệu!",
   },
   {
     id: 3,
     name: "Sophia Lee",
-    address: "Seoul, South Korea",
+    address: "Seoul, Hàn Quốc",
     image:
       "https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=200",
     rating: 5,
     review:
-      "Amazing service! I always find the best luxury accommodations through QuickStay. Their recommendations never disappoint!",
+      "Dịch vụ tuyệt vời! Tôi luôn tìm được chỗ ở sang trọng tốt nhất thông qua QuickStay. Những gợi ý của họ không bao giờ làm tôi thất vọng!",
   },
 ];
 
 // Facility Icon
 export const facilityIcons = {
-  "Free WiFi": assets.freeWifiIcon,
-  "Free Breakfast": assets.freeBreakfastIcon,
-  "Room Service": assets.roomServiceIcon,
-  "Mountain View": assets.mountainIcon,
-  "Pool Access": assets.poolIcon,
+  "WiFi Miễn Phí": assets.freeWifiIcon,
+  "Bữa Sáng Miễn Phí": assets.freeBreakfastIcon,
+  "Dịch Vụ Phòng": assets.roomServiceIcon,
+  "View Núi": assets.mountainIcon,
+  "Hồ Bơi": assets.poolIcon,
 };
 
 // For Room Details Page
 export const roomCommonData = [
   {
     icon: assets.homeIcon,
-    title: "Clean & Safe Stay",
-    description: "A well-maintained and hygienic space just for you.",
+    title: "Lưu Trú Sạch Sẽ & An Toàn",
+    description: "Không gian được bảo trì tốt và vệ sinh dành riêng cho bạn.",
   },
   {
     icon: assets.badgeIcon,
-    title: "Enhanced Cleaning",
-    description: "This host follows Staybnb's strict cleaning standards.",
+    title: "Vệ Sinh Tăng Cường",
+    description: "Chủ nhà tuân thủ tiêu chuẩn vệ sinh nghiêm ngặt của Staybnb.",
   },
   {
     icon: assets.locationFilledIcon,
-    title: "Excellent Location",
-    description: "90% of guests rated the location 5 stars.",
+    title: "Vị Trí Tuyệt Vời",
+    description: "90% khách đánh giá vị trí 5 sao.",
   },
   {
     icon: assets.heartIcon,
-    title: "Smooth Check-In",
-    description: "100% of guests gave check-in a 5-star rating.",
+    title: "Check-In Thuận Tiện",
+    description: "100% khách đánh giá check-in 5 sao.",
   },
 ];
 
@@ -189,7 +189,7 @@ export const userDummyData = {
 export const hotelDummyData = {
   _id: "67f76393197ac559e4089b72",
   name: "Urbanza Suites",
-  address: "Main Road  123 Street , 23 Colony",
+  address: "Đường Chính 123, Khu 23",
   contact: "+0123456789",
   owner: userDummyData,
   city: "New York",
@@ -203,9 +203,9 @@ export const roomsDummyData = [
   {
     _id: "67f7647c197ac559e4089b96",
     hotel: hotelDummyData,
-    roomType: "Double Bed",
+    roomType: "Giường Đôi",
     pricePerNight: 399,
-    amenities: ["Room Service", "Mountain View", "Pool Access"],
+    amenities: ["Dịch Vụ Phòng", "View Núi", "Hồ Bơi"],
     images: [roomImg1, roomImg2, roomImg3, roomImg4],
     isAvailable: true,
     createdAt: "2025-04-10T06:26:04.013Z",
@@ -215,9 +215,9 @@ export const roomsDummyData = [
   {
     _id: "67f76452197ac559e4089b8e",
     hotel: hotelDummyData,
-    roomType: "Double Bed",
+    roomType: "Giường Đôi",
     pricePerNight: 299,
-    amenities: ["Room Service", "Mountain View", "Pool Access"],
+    amenities: ["Dịch Vụ Phòng", "View Núi", "Hồ Bơi"],
     images: [roomImg2, roomImg3, roomImg4, roomImg1],
     isAvailable: true,
     createdAt: "2025-04-10T06:25:22.593Z",
@@ -227,9 +227,9 @@ export const roomsDummyData = [
   {
     _id: "67f76406197ac559e4089b82",
     hotel: hotelDummyData,
-    roomType: "Double Bed",
+    roomType: "Giường Đôi",
     pricePerNight: 249,
-    amenities: ["Free WiFi", "Free Breakfast", "Room Service"],
+    amenities: ["WiFi Miễn Phí", "Bữa Sáng Miễn Phí", "Dịch Vụ Phòng"],
     images: [roomImg3, roomImg4, roomImg1, roomImg2],
     isAvailable: true,
     createdAt: "2025-04-10T06:24:06.285Z",
@@ -239,9 +239,9 @@ export const roomsDummyData = [
   {
     _id: "67f763d8197ac559e4089b7a",
     hotel: hotelDummyData,
-    roomType: "Single Bed",
+    roomType: "Giường Đơn",
     pricePerNight: 199,
-    amenities: ["Free WiFi", "Room Service", "Pool Access"],
+    amenities: ["WiFi Miễn Phí", "Dịch Vụ Phòng", "Hồ Bơi"],
     images: [roomImg4, roomImg1, roomImg2, roomImg3],
     isAvailable: true,
     createdAt: "2025-04-10T06:23:20.252Z",
@@ -261,7 +261,7 @@ export const userBookingsDummyData = [
     checkOutDate: "2025-05-01T00:00:00.000Z",
     totalPrice: 299,
     guests: 1,
-    status: "pending",
+    status: "chờ xử lý",
     paymentMethod: "Stripe",
     isPaid: true,
     createdAt: "2025-04-10T06:42:01.529Z",
@@ -277,8 +277,8 @@ export const userBookingsDummyData = [
     checkOutDate: "2025-04-28T00:00:00.000Z",
     totalPrice: 399,
     guests: 1,
-    status: "pending",
-    paymentMethod: "Pay At Hotel",
+    status: "chờ xử lý",
+    paymentMethod: "Thanh Toán Tại Khách Sạn",
     isPaid: false,
     createdAt: "2025-04-10T06:41:45.873Z",
     updatedAt: "2025-04-10T06:41:45.873Z",
@@ -293,8 +293,8 @@ export const userBookingsDummyData = [
     checkOutDate: "2025-04-12T00:00:00.000Z",
     totalPrice: 199,
     guests: 1,
-    status: "pending",
-    paymentMethod: "Pay At Hotel",
+    status: "chờ xử lý",
+    paymentMethod: "Thanh Toán Tại Khách Sạn",
     isPaid: false,
     createdAt: "2025-04-10T06:41:20.501Z",
     updatedAt: "2025-04-10T06:41:20.501Z",

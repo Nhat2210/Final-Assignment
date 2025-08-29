@@ -21,7 +21,6 @@ const ExclusiveOffers = () => {
         </button>
       </div>
 
-      {/* FIX: Thêm grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 w-full">
         {exclusiveOffers.map((item) => (
           <div
@@ -29,7 +28,6 @@ const ExclusiveOffers = () => {
             className="group relative flex flex-col justify-between min-h-[300px] p-6 rounded-xl text-white bg-no-repeat bg-cover bg-center overflow-hidden"
             style={{ backgroundImage: `url(${item.image})` }}
           >
-            {/* Overlay để text dễ đọc hơn */}
             <div className="absolute inset-0 bg-black/30 rounded-xl"></div>
 
             <div className="relative z-10">
