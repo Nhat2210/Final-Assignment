@@ -10,8 +10,8 @@ const Dashboard = () => {
     <div>
       <Title
         align="left"
-        title="Bảng điều khiển"
         font="outfit"
+        title="Bảng điều khiển"
         subTitle="Chào mừng trở lại! Quản lý khách sạn của bạn "
       />
       <div className="flex gap-4 my-8">

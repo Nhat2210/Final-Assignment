@@ -85,7 +85,7 @@ const AddRoom = () => {
           <input
             type="number"
             placeholder="0"
-            className="border border-gray-300 mt-1 rounded p-2 w-24"
+            className="border border-gray-300 mt-1 rounded p-2 w-24 rounded-xl"
             value={inputs.pricePerNight}
             onChange={(e) =>
               setInputs({ ...inputs, pricePerNight: e.target.value })
@@ -119,7 +119,7 @@ const AddRoom = () => {
       </div>
       <button
         type="button"
-        class="bg-white mt-8 text-blue-500 active:scale-95 transition text-sm flex items-center px-6 py-3 gap-2 rounded w-max border border-gray-500/30 hover:bg-blue-500 hover:text-white"
+        class="bg-white mt-8 text-blue-500 active:scale-95 transition text-sm flex items-center px-6 py-3 gap-2 rounded-xl w-max border border-gray-500/30 hover:bg-blue-500 hover:text-white"
       >
         <svg
           width="16"
