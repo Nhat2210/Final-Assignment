@@ -2,16 +2,12 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(`${process.env.MONGODB_URI}/hotel-booking`, {
-      serverSelectionTimeoutMS: 30000, // 30s thay vì 10s
-      socketTimeoutMS: 45000,
-      bufferMaxEntries: 0,
-      maxPoolSize: 10,
+    mongoose.connection.on("connected", () => {
+      console.log("MongoDB connected successfully");
     });
-    console.log("MongoDB connected successfully");
+    await mongoose.connect(`${process.env.MONGODB_URI}/hotel-booking`);
   } catch (error) {
-    console.log("MongoDB connection failed:", error);
-    process.exit(1);
+    console.log(error);
   }
 };
 
