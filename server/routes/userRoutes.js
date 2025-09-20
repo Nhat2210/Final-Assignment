@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserData } from "../controllers/userController";
+import { getUserData } from "../controllers/userController.js";
 import { storeRecentSearchCities } from "../controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
