@@ -1,9 +1,10 @@
 import React from "react";
 import { assets } from "../assets/assets.js";
-import { Link, useNavigate } from "react-router-dom";
-import { useClerk, useUser, UserButton } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
+import { useClerk, UserButton } from "@clerk/clerk-react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAppContext } from "../context/useAppContext.js";
 
 const BookIcon = () => (
   <svg
@@ -37,8 +38,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { openSignIn } = useClerk();
-  const { user } = useUser();
-  const navigate = useNavigate();
+
+  const { user, navigate, isOwner, setShowHotelReg } = useAppContext();
   const location = useLocation();
 
   useEffect(() => {
@@ -89,14 +90,18 @@ const Navbar = () => {
             />
           </Link>
         ))}
-        <button
-          onClick={() => navigate("/owner")}
-          className={`border px-4 py-2 text-sm font-light rounded-full cursor-pointer ${
-            isScrolled ? "text-black" : "text-white"
-          } transition-all`}
-        >
-          Bảng điều khiển
-        </button>
+        {user && (
+          <button
+            onClick={() =>
+              isOwner ? navigate("/owner") : setShowHotelReg(true)
+            }
+            className={`border px-4 py-2 text-sm font-light rounded-full cursor-pointer ${
+              isScrolled ? "text-black" : "text-white"
+            } transition-all`}
+          >
+            {isOwner ? "Bảng điều khiển" : "Danh sách phòng của bạn"}
+          </button>
+        )}
       </div>
 
       <div className="hidden md:flex items-center gap-4">
@@ -169,10 +174,12 @@ const Navbar = () => {
 
         {user && (
           <button
-            onClick={() => navigate("/owner")}
+            onClick={() =>
+              isOwner ? navigate("/owner") : setShowHotelReg(true)
+            }
             className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
           >
-            Bảng điều khiển
+            {isOwner ? "Bảng điều khiển" : "Danh sách phòng của bạn"}
           </button>
         )}
 

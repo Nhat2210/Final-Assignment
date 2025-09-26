@@ -18,7 +18,7 @@ const bookingSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       required: true,
-      default: "Pay At Hotel",
+      default: "Thanh toán tại quầy",
     },
     isPaid: { type: Boolean, default: false },
   },

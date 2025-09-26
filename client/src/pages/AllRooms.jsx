@@ -1,8 +1,9 @@
-import React from "react";
-import { assets, facilityIcons, roomsDummyData } from "../assets/assets";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo } from "react";
+import { assets, facilityIcons } from "../assets/assets";
+import { useSearchParams } from "react-router-dom";
 import StarRating from "../components/StarRating";
 import { useState } from "react";
+import { useAppContext } from "../context/useAppContext";
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }) => {
   return (
@@ -24,7 +25,7 @@ const RadioButton = ({ label, selected = false, onChange = () => {} }) => {
         type="radio"
         name="sortOptions"
         checked={selected}
-        onChange={() => label}
+        onChange={() => onChange(label)}
       />
       <span className="font-light select-none">{label}</span>
     </label>
@@ -32,32 +33,134 @@ const RadioButton = ({ label, selected = false, onChange = () => {} }) => {
 };
 
 const AllRooms = () => {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { rooms, navigate, currency } = useAppContext();
   const [openFilters, setOpenFilters] = useState(false);
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    roomType: [],
+    priceRange: [],
+  });
+  const [selectedSort, setSelectedSort] = useState("");
+
   const roomTypes = [
-    "Giường đơn ",
+    "Giường đơn",
     "Giường đôi",
     "Giường hạng sang",
     "Phòng gia đình",
   ];
+
   const priceRanges = [
+    "0-500000",
+    "500000-1000000",
+    "1000000-2000000",
+    "2000000-3000000",
+  ];
+
+  const priceRangeLabels = [
     "0 đến 500.000",
     "500.000 đến 1.000.000",
     "1.000.000 đến 2.000.000",
-    "2.000.000 đến 3.0000.000",
+    "2.000.000 đến 3.000.000",
   ];
+
   const sortOptions = ["Giá Cao Đến Thấp", "Giá Thấp Đến Cao", "Phòng mới"];
+
+  // Handle changes for filters and sorting
+  const handleFilterChange = (checked, value, type) => {
+    setSelectedFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      if (checked) {
+        updatedFilters[type].push(value);
+      } else {
+        updatedFilters[type] = updatedFilters[type].filter(
+          (item) => item !== value
+        );
+      }
+      return updatedFilters;
+    });
+  };
+
+  const handleSortChange = (sortOption) => {
+    setSelectedSort(sortOption);
+  };
+
+  const matchesRoomType = (room) => {
+    return (
+      selectedFilters.roomType.length === 0 ||
+      selectedFilters.roomType.includes(room.roomType)
+    );
+  };
+
+  const matchesPriceRange = (room) => {
+    if (selectedFilters.priceRange.length === 0) return true;
+
+    return selectedFilters.priceRange.some((range) => {
+      const [min, max] = range.split("-").map(Number);
+      return room.pricePerNight >= min && room.pricePerNight <= max;
+    });
+  };
+
+  const sortRooms = (a, b) => {
+    if (selectedSort === "Giá Cao Đến Thấp") {
+      return b.pricePerNight - a.pricePerNight;
+    }
+    if (selectedSort === "Giá Thấp Đến Cao") {
+      return a.pricePerNight - b.pricePerNight;
+    }
+    if (selectedSort === "Phòng mới") {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    return 0;
+  };
+
+  // Filter Destination
+  const filterDestination = (room) => {
+    const destination = searchParams.get("destination");
+    if (!destination) return true;
+    return room.hotel.city.toLowerCase().includes(destination.toLowerCase());
+  };
+
+  // Filter and sort rooms based on the selected filters and sort option
+  const filteredRooms = useMemo(() => {
+    return rooms
+      .filter(
+        (room) =>
+          matchesRoomType(room) &&
+          matchesPriceRange(room) &&
+          filterDestination(room)
+      )
+      .sort(sortRooms);
+  }, [rooms, selectedFilters, selectedSort, searchParams]);
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSelectedFilters({
+      roomType: [],
+      priceRange: [],
+    });
+    setSelectedSort("");
+    setSearchParams({});
+  };
+
   return (
     <div className="flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32">
       <div>
         <div className="flex flex-col items-start text-left">
-          <h1 className="font-playfair text-4xl md:text-[40px]">Title</h1>
+          <h1 className="font-playfair text-4xl md:text-[40px]">
+            Tất cả phòng
+          </h1>
           <p className="text-sm md:text-base text-gray-500/90 mt-2 max-w-174">
-            Subtitle
+            Khám phá các phòng nghỉ tốt nhất
           </p>
         </div>
-        {roomsDummyData.map((room) => (
-          <div className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:pb-30 last-border-0">
+
+        {/* Hiển thị filteredRooms thay vì rooms */}
+        {filteredRooms.map((room) => (
+          <div
+            key={room._id}
+            className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:pb-30 last-border-0"
+          >
             <img
               onClick={() => {
                 navigate(`/rooms/${room._id}`);
@@ -73,15 +176,16 @@ const AllRooms = () => {
               <p className="text-gray-800 text-3xl font-playfair">
                 {room.hotel.name}
               </p>
-              <div className="flex items-center ">
+              <div className="flex items-center">
                 <StarRating rating={5} />
                 <p className="ml-2 mt-4">200+ reviews</p>
               </div>
-              <div>
+              <div className="flex items-center gap-2">
                 <img src={assets.locationIcon} alt="location-icon" />
                 <span>{room.hotel.address}</span>
               </div>
-              {/* Rooms  */}
+
+              {/* Room amenities */}
               <div className="flex flex-wrap items-center mt-3 mb-6 gap-4">
                 {room.amenities.map((item, index) => (
                   <div
@@ -97,15 +201,17 @@ const AllRooms = () => {
                   </div>
                 ))}
               </div>
-              {/* Room Price Per Night  */}
+
+              {/* Room Price Per Night */}
               <p className="text-xl font-medium text-gray-700">
-                ${room.pricePerNight} / day
+                {room.pricePerNight.toLocaleString("vi-VN")} VNĐ / đêm
               </p>
             </div>
           </div>
         ))}
       </div>
-      {/* Filter  */}
+
+      {/* Filter */}
       <div className="bg-white w-80 border border-gray-300 text-gray-600 max-lg:mb-8 min-lg:mt-16">
         <div
           className={`flex items-center justify-between px-5 py-2.5 min-lg:border-b border-gray-300 ${
@@ -120,30 +226,60 @@ const AllRooms = () => {
             >
               {openFilters ? "ẨN" : "HIỆN"}
             </span>
-            <span className="hidden lg:block">XÓA</span>
+            <span
+              className="hidden lg:block hover:text-red-500"
+              onClick={clearFilters}
+            >
+              XÓA
+            </span>
           </div>
         </div>
+
         <div
           className={`${
             openFilters ? "h-auto" : "h-0 lg:h-auto"
           } overflow-hidden transition-all duration-700`}
         >
+          {/* Room Type Filter */}
           <div className="px-5 pt-5">
-            <p className="font-medium text-gray-800 pb-2">Theo sự phổ biến</p>
+            <p className="font-medium text-gray-800 pb-2">Loại phòng</p>
             {roomTypes.map((room, index) => (
-              <CheckBox key={index} label={room} />
+              <CheckBox
+                key={index}
+                label={room}
+                selected={selectedFilters.roomType.includes(room)}
+                onChange={(checked) =>
+                  handleFilterChange(checked, room, "roomType")
+                }
+              />
             ))}
           </div>
+
+          {/* Price Range Filter */}
           <div className="px-5 pt-5">
-            <p className="font-medium text-gray-800 pb-2">Theo gía</p>
+            <p className="font-medium text-gray-800 pb-2">Theo giá</p>
             {priceRanges.map((range, index) => (
-              <CheckBox key={index} label={range} />
+              <CheckBox
+                key={index}
+                label={priceRangeLabels[index]}
+                selected={selectedFilters.priceRange.includes(range)} // Fixed: sử dụng range thay vì roomType
+                onChange={(checked) =>
+                  handleFilterChange(checked, range, "priceRange")
+                }
+              />
             ))}
           </div>
+
+          {/* Sort Options */}
           <div className="px-5 pt-5 pb-5">
-            <p className="font-medium text-gray-800 pb-2">Theo sự phổ biến</p>
+            <p className="font-medium text-gray-800 pb-2">Sắp xếp</p>
             {sortOptions.map((option, index) => (
-              <RadioButton key={index} label={option} />
+              <RadioButton
+                key={index}
+                label={option}
+                selected={selectedSort === option}
+                onChange={handleSortChange} // Fixed: truyền function reference
+              />
             ))}
           </div>
         </div>

@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import Title from "../../components/Title";
 import { assets } from "../../assets/assets";
+import { useAppContext } from "../../context/useAppContext";
+import toast from "react-hot-toast";
 
 const AddRoom = () => {
+  const { axios, getToken } = useAppContext();
   const [images, setImages] = useState({
     1: null,
     2: null,
@@ -13,15 +16,63 @@ const AddRoom = () => {
     roomType: "",
     pricePerNight: 0,
     amenities: {
-      "Wifi miễn phí": false,
+      "Wifi Miễn Phí": false,
       "Bữa sáng miễn phí": false,
       "Dịch vụ phòng": false,
       "View rừng núi": false,
       "Hồ bơi": false,
     },
   });
+  const [loading, setLoading] = useState(false);
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    const selectedAmenities = Object.keys(inputs.amenities).filter(
+      (key) => inputs.amenities[key]
+    );
+    if (
+      !inputs.roomType ||
+      !inputs.pricePerNight ||
+      selectedAmenities.length === 0 ||
+      !Object.values(images).some((image) => image)
+    ) {
+      toast.error("Vui lòng nhập đủ thông tin!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("roomType", inputs.roomType);
+      formData.append("pricePerNight", inputs.pricePerNight);
+      formData.append("amenities", JSON.stringify(selectedAmenities));
+      Object.values(images).forEach(
+        (file) => file && formData.append("images", file)
+      );
+
+      const { data } = await axios.post("/api/rooms/", formData, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        setInputs({
+          roomType: "",
+          pricePerNight: 0,
+          amenities: Object.fromEntries(
+            Object.keys(inputs.amenities).map((k) => [k, false])
+          ),
+        });
+        setImages({ 1: null, 2: null, 3: null, 4: null });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <form action="">
+    <form action="" onSubmit={onSubmitHandler}>
       <Title
         align="left"
         title="Thêm phòng"
@@ -45,7 +96,7 @@ const AddRoom = () => {
               alt=""
               className="w-32 h-32 object-cover border-2 border-dashed border-gray-300 rounded-lg"
               style={{
-                width: "200x",
+                width: "200px",
                 height: "128px",
                 objectFit: "cover",
               }}
@@ -118,24 +169,11 @@ const AddRoom = () => {
         ))}
       </div>
       <button
-        type="button"
+        type="submit"
         class="bg-white mt-8 text-blue-500 active:scale-95 transition text-sm flex items-center px-6 py-3 gap-2 rounded-xl w-max border border-gray-500/30 hover:bg-blue-500 hover:text-white"
+        disabled={loading}
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M9.298 14.75a1.5 1.5 0 0 1-2.596 0M12.5 5a4.5 4.5 0 1 0-9 0c0 5.25-2.25 6.75-2.25 6.75h13.5S12.5 10.25 12.5 5"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Notification
+        {loading ? "Loading ... " : "Thêm phòng"}
       </button>
     </form>
   );

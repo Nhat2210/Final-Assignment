@@ -140,11 +140,11 @@ export const testimonials = [
 
 // Facility Icon
 export const facilityIcons = {
-  "WiFi Miễn Phí": assets.freeWifiIcon,
-  "Bữa Sáng Miễn Phí": assets.freeBreakfastIcon,
-  "Dịch Vụ Phòng": assets.roomServiceIcon,
-  "View Núi": assets.mountainIcon,
-  "Hồ Bơi": assets.poolIcon,
+  "Wifi Miễn Phí": assets.freeWifiIcon,
+  "Bữa sáng miễn phí": assets.freeBreakfastIcon,
+  "Dịch vụ phòng": assets.roomServiceIcon,
+  "View rừng núi": assets.mountainIcon,
+  "Hồ bơi": assets.poolIcon,
 };
 
 // For Room Details Page

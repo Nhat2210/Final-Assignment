@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HotelCard from "./HotelCard.jsx";
 import Title from "./Title.jsx";
 import { useAppContext } from "../context/useAppContext.js";
 
 const FeaturedDestination = () => {
-  const { rooms, navigate } = useAppContext();
+  const { rooms, searchedCities } = useAppContext();
+  const [recommended, setRecommended] = useState([]);
+
+  const filterHotels = () => {
+    const filteredHotels = rooms.slice((room) => {
+      searchedCities.includes(room.hotel.city);
+    });
+    setRecommended(filteredHotels);
+  };
+
+  useEffect(() => {
+    filterHotels();
+  }, [rooms, searchedCities]);
   return (
-    rooms.length > 0 && (
+    recommended.length > 0 && (
       <div className="flex flex-col items-center px-6 md:px-16 lg:px-24 bg-slate-50 py-20">
         <Title
-          title="Khách sạn nổi bật nhất"
+          title="Khách sạn được đề xuất"
           subTitle="Khám phá những khách sạn cao cấp được tuyển chọn đặc biệt, mang đến trải nghiệm sang trọng và đáng nhớ trên toàn thế giới"
         />
         <div className="flex flex-wrap items-center justify-center gap-6 mt-20">
