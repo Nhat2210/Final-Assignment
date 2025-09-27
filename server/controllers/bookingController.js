@@ -1,3 +1,4 @@
+import transporter from "../config/nodemailer.js";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
@@ -49,7 +50,7 @@ export const createBooking = async (req, res) => {
       room,
     });
     if (!isAvailable) {
-      return res.json({ success: false, message: "Room is not available" });
+      return res.json({ success: false, message: "Phòng này đã được đặt" });
     }
     // get TotalPrice from Room
     const roomData = await Room.findById(room).populate("hotel");
@@ -69,9 +70,34 @@ export const createBooking = async (req, res) => {
       checkOutDate,
       totalPrice,
     });
-    res.json({ success: true, message: "Booking created successfully" });
+    console.log(req.user);
+
+    const mailOptions = {
+      from: "anhnhat22102003@gmail.com",
+      to: req.user.email,
+      subject: "Hotel Booking Details",
+      html: `
+      <h2>Your Booking Details </h2>
+<p>Dear ${
+        req.user.username?.replace(/\s*null\s*/gi, "").trim() ||
+        "Valued Customer"
+      },</p>      <p>Thank you for your booking! Here are your details: </p>
+      <ul>
+        <li><strong>Booking ID: </strong>${booking._id}</li>
+        <li><strong>Hotel Name: </strong>${roomData.hotel.name}</li>
+        <li><strong>Location </strong>${roomData.hotel.address}</li>
+        <li><strong>Date: </strong>${booking.checkInDate.toDateString()}</li>
+        <li><strong>Booking Amount: </strong>${booking.totalPrice} ${
+        process.env.CURRENCY
+      } / day</li>
+      </ul>
+      <p>We are looking forward to welcoming you!</p>
+      `,
+    };
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: "Đặt phòng thành công" });
   } catch (error) {
-    res.json({ success: false, message: "Failed to create Booking" });
+    res.json({ success: false, message: "Đặt phòng không thành công" });
   }
 };
 
