@@ -72,7 +72,7 @@ const AddRoom = () => {
   };
 
   return (
-    <form action="" onSubmit={onSubmitHandler}>
+    <form className="" action="" onSubmit={onSubmitHandler}>
       <Title
         align="left"
         title="Thêm phòng"
@@ -170,7 +170,7 @@ const AddRoom = () => {
       </div>
       <button
         type="submit"
-        class="bg-white mt-8 text-blue-500 active:scale-95 transition text-sm flex items-center px-6 py-3 gap-2 rounded-xl w-max border border-gray-500/30 hover:bg-blue-500 hover:text-white"
+        className="bg-white mt-8 text-blue-500 active:scale-95 transition text-sm flex items-center px-6 py-3 gap-2 rounded-xl w-max border border-gray-500/30 hover:bg-blue-500 hover:text-white"
         disabled={loading}
       >
         {loading ? "Loading ... " : "Thêm phòng"}

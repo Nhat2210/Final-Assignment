@@ -1,4 +1,24 @@
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useAppContext } from "../context/useAppContext";
 const NewsLetter = () => {
+  const { axios } = useAppContext();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!email) return toast.error("Vui lòng nhập email!");
+    setLoading(true);
+    try {
+      const { data } = await axios.post("/api/newsletter", { email });
+      toast.success(data.message);
+      setEmail("");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Gửi thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-center w-full max-w-6xl mx-auto rounded-3xl px-6 py-16 md:py-20 lg:py-24 my-8 md:my-12 lg:my-16 bg-gray-900 text-white border border-white/20 shadow-2xl">
       <div className="flex flex-col justify-center items-center text-center max-w-4xl">
@@ -15,10 +35,16 @@ const NewsLetter = () => {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mt-8 md:mt-10 w-full max-w-md sm:max-w-lg">
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="flex-1 bg-white/10 px-5 py-4 border-2 border-white/20 rounded-xl outline-none focus:border-white/40 focus:ring-4 focus:ring-white/10 transition-all duration-200 text-white placeholder:text-gray-400 shadow-sm"
           placeholder="Nhập email của bạn"
         />
-        <button className="flex items-center justify-center gap-2 group bg-black hover:bg-gray-800 px-6 md:px-8 py-4 rounded-xl text-white font-medium active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl whitespace-nowrap">
+        <button
+          onClick={handleSubscribe}
+          disabled={loading}
+          className="flex items-center justify-center gap-2 group bg-black hover:bg-gray-800 px-6 md:px-8 py-4 rounded-xl text-white font-medium active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl whitespace-nowrap"
+        >
           Đăng ký
           <svg
             className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-200"
