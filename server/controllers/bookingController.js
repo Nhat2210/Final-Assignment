@@ -1,7 +1,10 @@
+import Stripe from "stripe";
 import transporter from "../config/nodemailer.js";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // function to check availability of Room
 
@@ -139,4 +142,132 @@ export const getHotelBookings = async (req, res) => {
   } catch (error) {
     res.json({ success: false, message: "Failed to fetch bookings" });
   }
+};
+
+export const stripePayment = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+
+    // Validate
+    if (!bookingId) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu bookingId",
+      });
+    }
+
+    // Get booking
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy booking",
+      });
+    }
+
+    // Get room data
+    const roomData = await Room.findById(booking.room).populate("hotel");
+    if (!roomData || !roomData.hotel) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy phòng hoặc khách sạn",
+      });
+    }
+
+    const totalPrice = booking.totalPrice;
+    const { origin } = req.headers;
+
+    // Line items
+    const line_items = [
+      {
+        price_data: {
+          currency: "vnd",
+          product_data: {
+            name: roomData.hotel.name,
+            description: `${roomData.roomType} - ${booking.guests} khách`,
+            images:
+              roomData.images && roomData.images.length > 0
+                ? [roomData.images[0]]
+                : [],
+          },
+          unit_amount: Math.round(totalPrice), // VND không nhân 100
+        },
+        quantity: 1,
+      },
+    ];
+
+    // Create Checkout session - DÙNG stripe không phải stripeInstance
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      mode: "payment",
+      success_url: `${origin}/loader/my-bookings`,
+      cancel_url: `${origin}/my-bookings`,
+      metadata: {
+        bookingId: bookingId.toString(),
+      },
+    });
+
+    // Log để debug
+    console.log("✅ Stripe session created:", session.id);
+
+    res.json({
+      success: true,
+      url: session.url,
+      sessionId: session.id,
+    });
+  } catch (error) {
+    console.error("❌ Stripe payment error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Thanh toán thất bại",
+      error: error.message, // Thêm error message để debug
+    });
+  }
+};
+
+// ========== STRIPE WEBHOOK ==========
+export const stripeWebhook = async (req, res) => {
+  const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    // DÙNG stripe không phải stripeInstance
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error("❌ Webhook error:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle event
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+    const bookingId = session.metadata.bookingId;
+
+    console.log("🔔 Webhook received for booking:", bookingId);
+
+    try {
+      const updatedBooking = await Booking.findByIdAndUpdate(
+        bookingId,
+        {
+          paymentStatus: "paid",
+          isPaid: true,
+          paidAt: new Date(),
+          stripeSessionId: session.id,
+        },
+        { new: true }
+      );
+
+      if (updatedBooking) {
+        console.log("✅ Payment successful for booking:", bookingId);
+      } else {
+        console.error("❌ Booking not found:", bookingId);
+      }
+    } catch (error) {
+      console.error("❌ Error updating booking:", error);
+    }
+  }
+
+  res.json({ received: true });
 };

@@ -10,12 +10,18 @@ import connectCloudinary from "./config/cloudinary.js";
 import roomRouter from "./routes/roomRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import { stripeWebhook } from "./controllers/bookingController.js";
 connectDB();
 connectCloudinary();
 const app = express();
 
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 
+app.post(
+  "/api/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 //middleware
 app.use(express.json()); // Parse JSON request bodies
 app.use(clerkMiddleware()); // Clerk middleware for authentication

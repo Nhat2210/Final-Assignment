@@ -14,7 +14,7 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const { data } = await axios.get("/api/bookings/hotel", {
-        header: { Authorization: `Bearer ${await getToken()}` },
+        headers: { Authorization: `Bearer ${await getToken()}` },
       });
       if (data.success) {
         setDashboardData(data.dashboardData);
